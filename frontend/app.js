@@ -79,6 +79,7 @@ document.getElementById('addEventForm').addEventListener('submit', async (e) => 
 
         document.getElementById('addEventForm').reset();
         await fetchEvents();
+        document.getElementById('toast-success').classList.remove('hidden');
     } catch (error) {
         console.error('Error adding event:', error);
     }
