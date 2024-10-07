@@ -72,10 +72,11 @@ document.getElementById('addEventForm').addEventListener('submit', async (e) => 
         });
 
         if (!response.ok) {
-            throw new Error('Failed to add event');
+            const errorData = await response.json();
+            alert(errorData.error || 'Failed to add event');
+            throw new Error(errorData.error || 'Failed to add event');
         }
 
-        // Clear form and refresh events
         document.getElementById('addEventForm').reset();
         await fetchEvents();
     } catch (error) {
