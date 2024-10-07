@@ -23,7 +23,7 @@ class EventController
             $result = $this->integrationService->getEvents();
             $this->integrationService->jsonResponse($result, 201);  // 201 Created
         } catch (\Exception $e) {
-            $this->integrationService->errorREsponse( $e->getMessage(), 400);
+            $this->integrationService->errorResponse( $e->getMessage(), 400);
         }
     }
 
@@ -41,9 +41,9 @@ class EventController
             $result = $this->integrationService->addEvent($title, $description, $startDate, $endDate);
             $this->integrationService->jsonResponse($result, 201);  // 201 Created
         } catch (\InvalidArgumentException $e) {
-            $this->integrationService->errorREsponse( $e->getMessage(), 400);
+            $this->integrationService->errorResponse( $e->getMessage(), 400);
         } catch (\Exception $e) {
-            $this->integrationService->errorREsponse( $e->getMessage(), 500);
+            $this->integrationService->errorResponse( $e->getMessage(), 500);
         }
     }
 
@@ -53,7 +53,7 @@ class EventController
         try {
             echo $this->integrationService->getEventDetails($id);
         } catch (\Exception $e) {
-            $this->integrationService->errorREsponse( $e->getMessage(), 500);
+            $this->integrationService->errorResponse( $e->getMessage(), 500);
         }
     }
 }

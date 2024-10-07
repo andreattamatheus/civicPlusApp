@@ -148,7 +148,7 @@ class IntegrationCivicService
      * @param mixed $data
      * @param int $statusCode
      */
-    public function errorREsponse($errorMessage, int $statusCode = 200): void
+    public function errorResponse($errorMessage, int $statusCode = 200): void
     {
         http_response_code($statusCode);
         echo json_encode(['error' => $errorMessage], JSON_THROW_ON_ERROR);
