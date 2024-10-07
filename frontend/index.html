@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .event { margin: 10px 0; }
+        .hidden { display: none; }
+        .details { margin: 20px 0; }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+    <div class="max-w-lg mx-auto my-6">
+        <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-black">Event Management</h1>
+
+        <form id="addEventForm" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label for="eventTitle" class="block text-gray-700 font-bold mb-2">Title</label>
+                <input type="text" id="eventTitle" placeholder="Event Title" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+
+            <div class="mb-4">
+                <label for="eventDescription" class="block text-gray-700 font-bold mb-2">Description</label>
+                <textarea id="eventDescription" placeholder="Event Description" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+
+            <div class="flex mb-4 justify-between">
+                <div class="flex-col">
+                    <label for="startDate" class="block text-gray-700 font-bold mb-2 mr-2">Start Date</label>
+                    <input type="datetime-local" id="startDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+
+                <div class="flex-col">
+                    <label for="endDate" class="block text-gray-700 font-bold mb-2 mr-2">End Date</label>
+                    <input type="datetime-local" id="endDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+            </div>
+
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Event</button>
+        </form>
+    </div>
+
+    <div class="max-w-lg mx-auto mt-6">
+        <h2 class="text-2xl font-extrabold dark:text-gray">Event List</h2>
+        <div id="eventList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        </div>
+
+        <div id="eventDetail" class="hidden max-w-md mx-auto text-center" >
+            <div id="detailsContent" class="p-4"></div>
+            <button id="backButton" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Back to List</button>
+        </div>
+    </div>
+    <div id="loader" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="spinner-border text-red" output="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+<script src="app.js"></script>
+</body>
+</html>
