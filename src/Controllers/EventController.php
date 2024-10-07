@@ -2,44 +2,48 @@
 
 namespace App\Controllers;
 
+use App\Requests\EventFormRequest;
 use App\Services\IntegrationCivicService;
 
 class EventController
 {
     private IntegrationCivicService $integrationService;
 
+    private EventFormRequest $eventFormRequest;
+
     public function __construct()
     {
         $this->integrationService = new IntegrationCivicService();
+        $this->eventFormRequest = new EventFormRequest();
     }
 
     public function index(): void
     {
         try {
-            echo $this->integrationService->getEvents();
+            $result = $this->integrationService->getEvents();
+            $this->integrationService->jsonResponse($result, 201);  // 201 Created
         } catch (\Exception $e) {
-            echo json_encode(['error' => $e->getMessage()], JSON_THROW_ON_ERROR);
+            $this->integrationService->errorREsponse( $e->getMessage(), 400);
         }
     }
 
     public function store(): void
     {
         try {
-            $data = json_decode(file_get_contents('php://input'), true);
-            if (empty($data['title']) || empty($data['description']) || empty($data['startDate']) || empty($data['endDate'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'All fields are required'], JSON_THROW_ON_ERROR);
-                exit;
-            }
+            $data = $this->eventFormRequest->getInputData();
+            $this->eventFormRequest->validateInputData($data);
 
             $title = $data['title'];
             $description = $data['description'];
             $startDate = $data['startDate'];
             $endDate = $data['endDate'];
 
-            echo $this->integrationService->addEvent($title, $description, $startDate, $endDate);
+            $result = $this->integrationService->addEvent($title, $description, $startDate, $endDate);
+            $this->integrationService->jsonResponse($result, 201);  // 201 Created
+        } catch (\InvalidArgumentException $e) {
+            $this->integrationService->errorREsponse( $e->getMessage(), 400);
         } catch (\Exception $e) {
-            echo json_encode(['error' => $e->getMessage()], JSON_THROW_ON_ERROR);
+            $this->integrationService->errorREsponse( $e->getMessage(), 500);
         }
     }
 
@@ -49,7 +53,7 @@ class EventController
         try {
             echo $this->integrationService->getEventDetails($id);
         } catch (\Exception $e) {
-            echo json_encode(['error' => $e->getMessage()], JSON_THROW_ON_ERROR);
+            $this->integrationService->errorREsponse( $e->getMessage(), 500);
         }
     }
 }

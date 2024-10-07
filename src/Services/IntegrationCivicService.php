@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ApiIntegrationBadResponse;
 use Exception;
 
 class IntegrationCivicService
@@ -82,19 +83,19 @@ class IntegrationCivicService
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
+            http_response_code(400);
             throw new Exception('Error in cURL: ' . curl_error($ch));
         }
 
         $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
         curl_close($ch);
 
         if (!in_array($httpStatusCode, [200 , 201], true)) {
             echo $this->badResponse($response);
-            throw new Exception('Error: ' . $httpStatusCode);
+            throw new ApiIntegrationBadResponse('Error: ' . $httpStatusCode);
         }
 
-        $jsonData =  json_encode($response);
+        $jsonData =  json_encode($response, JSON_THROW_ON_ERROR);
 
         return json_decode($jsonData, true);
     }
@@ -111,7 +112,7 @@ class IntegrationCivicService
         if (isset($matches[0])) {
             $jsonString = stripslashes($matches[0]);
 
-            $jsonArray = json_decode($jsonString, true);
+            $jsonArray = json_decode($jsonString, true, 512, JSON_THROW_ON_ERROR);
 
             if (json_last_error() === JSON_ERROR_NONE) {
                 $responseData['message'] = $jsonArray['message'] ?? 'An error occurred.';
@@ -126,6 +127,32 @@ class IntegrationCivicService
         http_response_code(400);
 
         return json_encode($responseData, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * Send a JSON response.
+     *
+     * @param mixed $data
+     * @param int $statusCode
+     */
+    public function jsonResponse($data, int $statusCode = 200): void
+    {
+        http_response_code($statusCode);
+        echo $data;
+        exit;
+    }
+
+    /**
+     * Send a JSON response.
+     *
+     * @param mixed $data
+     * @param int $statusCode
+     */
+    public function errorREsponse($errorMessage, int $statusCode = 200): void
+    {
+        http_response_code($statusCode);
+        echo json_encode(['error' => $errorMessage], JSON_THROW_ON_ERROR);
+        exit;
     }
 
     public function getEvents() : string
@@ -154,5 +181,4 @@ class IntegrationCivicService
 
         return $this->makeAuthenticatedRequest($url, 'POST', $data);
     }
-
 }
